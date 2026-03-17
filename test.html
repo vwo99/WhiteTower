@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>静水深流处的凝视 —— 《白色巨塔》导读与推荐</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; background-color: #f8fafc; color: #334155; scroll-behavior: smooth; }
+        .chart-container { position: relative; width: 100%; max-width: 500px; margin-left: auto; margin-right: auto; height: 350px; max-height: 400px; }
+        .tower-bg { background: linear-gradient(to bottom, #ffffff 0%, #e2e8f0 100%); }
+        .text-crimson { color: #9f1239; }
+        .bg-crimson { background-color: #9f1239; }
+        .border-crimson { border-color: #9f1239; }
+        .fade-in { opacity: 0; transform: translateY(20px); transition: opacity 0.8s ease-out, transform 0.8s ease-out; }
+        .fade-in.visible { opacity: 1; transform: translateY(0); }
+        .glass-panel { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.3); }
+        
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        .loading-shimmer {
+            background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+    </style>
+</head>
+<body class="antialiased font-sans leading-relaxed selection:bg-rose-200 selection:text-rose-900">
+
+    <!-- 导航栏 -->
+    <nav class="fixed w-full z-50 glass-panel shadow-sm transition-all duration-300" id="navbar">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex-shrink-0 font-bold text-xl tracking-widest text-slate-800">
+                    <span class="text-crimson">白</span>色巨塔
+                </div>
+                <div class="hidden md:flex space-x-8 text-sm font-medium text-slate-600">
+                    <a href="#intro" class="hover:text-crimson transition-colors">起因</a>
+                    <a href="#system" class="hover:text-crimson transition-colors">巨塔生态</a>
+                    <a href="#characters" class="hover:text-crimson transition-colors">双雄镜像</a>
+                    <a href="#ai-reflection" class="hover:text-crimson transition-colors">✨ 智能对话</a>
+                    <a href="#recommendation" class="hover:text-crimson transition-colors">寄语</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 英雄区 -->
+    <section id="intro" class="pt-32 pb-20 px-4 tower-bg min-h-screen flex items-center">
+        <div class="max-w-4xl mx-auto text-center fade-in">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-6 tracking-tight">
+                在静水深流中，<br class="md:hidden" /><span class="text-crimson">凝视人性的深渊</span>
+            </h1>
+            <p class="text-lg md:text-xl text-slate-600 mb-10 leading-relaxed max-w-3xl mx-auto">
+                最近的一些社会回音，在水面上荡起了层层涟漪。那些关于科研、关于医疗、关于“师与徒”的沉重叹息，让我不可遏制地想起了一部由日本作家山崎丰子创作的皇皇巨著 —— <span class="font-bold">《白色巨塔》</span>。
+            </p>
+            <div class="inline-block p-1 rounded-full bg-slate-200 mb-8">
+                <button onclick="document.getElementById('system').scrollIntoView({behavior: 'smooth'})" class="px-6 py-2 rounded-full bg-white text-slate-700 font-medium shadow hover:shadow-md transition-all">
+                    向下探索这片阴影 &#8595;
+                </button>
+            </div>
+            <p class="text-sm text-slate-400 italic">（注：若无暇阅读原著，2003年唐泽寿明版同名电视剧亦是绝佳的入口）</p>
+        </div>
+    </section>
+
+    <!-- 第一部分：体制 -->
+    <section id="system" class="py-20 px-4 bg-white border-t border-slate-100">
+        <div class="max-w-5xl mx-auto">
+            <div class="mb-16 text-center fade-in">
+                <h2 class="text-3xl font-bold text-slate-800 mb-4">何为“白色巨塔”？</h2>
+                <div class="w-16 h-1 bg-crimson mx-auto mb-6"></div>
+                <p class="text-slate-600 max-w-2xl mx-auto text-lg">
+                    “巨塔”表面上是治病救人的神圣医院，实则是一座等级森严、权力板结的堡垒。在这里，医术往往被迫向权力与人情低头。
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div class="order-2 md:order-1 fade-in bg-slate-50 p-6 rounded-2xl shadow-inner text-center">
+                    <h3 class="text-lg font-semibold text-slate-700 mb-6">巨塔下的权力生态 (交互图表)</h3>
+                    <div class="chart-container">
+                        <canvas id="systemChart"></canvas>
+                    </div>
+                    <p class="mt-4 text-sm text-slate-500">点击图例查看在巨塔体系下，不同维度的精力倾斜。</p>
+                </div>
+
+                <div class="order-1 md:order-2 fade-in space-y-6">
+                    <div class="border-l-4 border-crimson pl-6">
+                        <h3 class="text-xl font-bold text-slate-800 mb-2">绝对服从的“学阀”制度</h3>
+                        <p class="text-slate-600 leading-relaxed">
+                            在书中的大学附属医院里，“教授”就是塔尖的君王。他们不仅掌握着医疗资源的分配，更扼住了年轻医生、医学生和研究员的命运咽喉。下位者为了生存、为了那一丝晋升的希望，往往必须奉献出绝对的忠诚，甚至扭曲自己的人格。
+                        </p>
+                    </div>
+                    <div class="pl-6 space-y-3">
+                        <p class="text-slate-600 leading-relaxed text-sm bg-slate-100 p-4 rounded-lg">
+                            <span class="text-crimson font-bold">思考：</span> 这种“导师/上级”拥有生杀大权的绝对不平衡，是否只存在于小说之中？
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 第二部分：人物 -->
+    <section id="characters" class="py-20 px-4 tower-bg">
+        <div class="max-w-5xl mx-auto">
+            <div class="mb-16 text-center fade-in">
+                <h2 class="text-3xl font-bold text-slate-800 mb-4">双雄镜像：人性的两极</h2>
+                <div class="w-16 h-1 bg-crimson mx-auto mb-6"></div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8 mb-12">
+                <div class="glass-panel p-8 rounded-2xl shadow-lg fade-in cursor-pointer hover:shadow-xl transition-shadow border-t-4 border-t-slate-800" onclick="updateRadar('zaizen')">
+                    <h3 class="text-2xl font-bold text-slate-900 mb-2">财前 五郎</h3>
+                    <p class="text-crimson font-medium mb-4">技术的巅峰，权力的囚徒</p>
+                    <p class="text-slate-600 text-sm leading-relaxed mb-4">他凭借惊人的外科天赋在巨塔中向上攀爬。为了建立世界第一的癌症中心，他可以妥协、算计。他并非纯粹的恶人，他只是太渴望“赢”。</p>
+                    <span class="inline-block px-3 py-1 bg-slate-200 text-slate-700 text-xs rounded-full">点击查看能力雷达</span>
+                </div>
+
+                <div class="glass-panel p-8 rounded-2xl shadow-lg fade-in cursor-pointer hover:shadow-xl transition-shadow border-t-4 border-t-blue-600" onclick="updateRadar('satomi')">
+                    <h3 class="text-2xl font-bold text-slate-900 mb-2">里见 修二</h3>
+                    <p class="text-blue-600 font-medium mb-4">纯粹的医者，孤独的清流</p>
+                    <p class="text-slate-600 text-sm leading-relaxed mb-4">他将患者视为平等的人，执着于基础研究。他对名利毫无兴趣，在污浊的巨塔中，固执地坚守着医者的良知，哪怕这意味着失去地位。</p>
+                    <span class="inline-block px-3 py-1 bg-blue-100 text-blue-700 text-xs rounded-full">点击查看能力雷达</span>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-2xl shadow-md fade-in max-w-3xl mx-auto border border-slate-100">
+                <h4 class="text-center font-bold text-slate-700 mb-4" id="radarTitle">能力与价值观对比图</h4>
+                <div class="chart-container">
+                    <canvas id="radarChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 第三部分：AI 对话 -->
+    <section id="ai-reflection" class="py-20 px-4 bg-white border-y border-slate-100">
+        <div class="max-w-4xl mx-auto">
+            <div class="mb-12 text-center fade-in">
+                <h2 class="text-3xl font-bold text-slate-800 mb-4">✨ 智启深思：与巨塔对话</h2>
+                <div class="w-16 h-1 bg-crimson mx-auto mb-6"></div>
+                <p class="text-slate-600 text-lg">
+                    关于书中折射出的现实、关于理想与现实的冲突，你可以通过内置 AI 开启深度对话。
+                </p>
+            </div>
+
+            <div class="bg-slate-50 p-6 md:p-10 rounded-3xl shadow-sm fade-in border border-slate-200">
+                <div class="space-y-4">
+                    <label class="block text-sm font-bold text-slate-700 mb-2">输入你的感悟或困惑</label>
+                    <textarea id="aiInput" class="w-full h-32 p-4 rounded-xl border border-slate-300 focus:ring-2 focus:ring-crimson outline-none transition-all resize-none text-slate-800" placeholder="例如：在这个时代，里见修二真的能生存下去吗？"></textarea>
+                    
+                    <div class="flex flex-wrap gap-4 mt-4">
+                        <button id="sendAiBtn" class="px-8 py-3 bg-crimson text-white font-bold rounded-full shadow-lg hover:bg-rose-900 transition-all flex items-center gap-2">
+                            <span>✨ 咨询巨塔之镜</span>
+                        </button>
+                        <button id="randomInsightBtn" class="px-6 py-3 bg-white text-slate-700 font-bold border border-slate-300 rounded-full hover:bg-slate-100 transition-all">
+                            <span>✨ 深度洞察</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="aiResponseContainer" class="hidden mt-8 p-6 bg-white rounded-2xl border border-slate-100 shadow-inner">
+                    <div class="flex items-start gap-3">
+                        <div class="w-8 h-8 rounded-full bg-crimson flex items-center justify-center text-white text-xs font-bold">塔</div>
+                        <div class="flex-1">
+                            <div id="aiLoading" class="hidden space-y-2">
+                                <div class="h-4 loading-shimmer rounded w-3/4"></div>
+                                <div class="h-4 loading-shimmer rounded w-full"></div>
+                            </div>
+                            <div id="aiResponseText" class="text-slate-700 leading-loose whitespace-pre-wrap"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 第四部分：荐语 -->
+    <section id="recommendation" class="py-20 px-4 bg-slate-900 text-white relative overflow-hidden">
+        <div class="max-w-4xl mx-auto relative z-10 fade-in">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-slate-100 mb-4">为何在今日向你强烈推荐？</h2>
+                <div class="w-16 h-1 bg-crimson mx-auto mb-6"></div>
+            </div>
+
+            <div class="bg-slate-800 p-8 md:p-12 rounded-2xl shadow-2xl border border-slate-700 text-lg leading-loose text-slate-300">
+                <p class="mb-6">那种对人性在庞大体制下被倾轧、被扭曲的叹息，随着最近的新闻，如潮水般涌上心头。我觉得自己有一种难以名状的使命感，必须向大家推荐这部作品。</p>
+                
+                <div class="mt-8 mb-8 border border-slate-600 rounded-lg p-1 bg-slate-900">
+                    <button id="revealBtn" class="w-full py-4 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded transition-colors flex items-center justify-center gap-2">
+                        <span>&#128274;</span> 点击阅读核心荐语
+                    </button>
+                    <div id="hiddenMessage" class="hidden p-6 text-slate-200 border-t border-slate-700">
+                        <p class="mb-4">请不要误以为《白色巨塔》仅仅是在描写现实中的日本医疗体制。尽管日本体系相对健全，但这并不意味着现实中没有类似的问题。</p>
+                        <p class="mt-6 text-center text-xl font-bold text-crimson tracking-widest">“究竟影射了谁，读完此书的你，心里自然明白。”</p>
+                    </div>
+                </div>
+                <p class="text-sm text-slate-400 text-center border-t border-slate-700 pt-8">喜欢读书的朋友，去翻开原著；不喜欢文字的朋友，去看2003年版电视剧。</p>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-slate-950 py-8 text-center text-slate-500 text-sm">
+        <p>献给每一个在体系中保持清醒的灵魂。</p>
+    </footer>
+
+    <script>
+        // Gemini API Configuration
+        const apiKey = ""; // API key managed by environment
+        const modelName = "gemini-2.5-flash-preview-09-2025";
+        
+        async function callGemini(prompt) {
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
+            const systemPrompt = "你是一位深度文学评论家，非常熟悉《白色巨塔》。你的回答应当深刻、富有同理心。不要直接讨论具体的现实政治事件，但要通过文学分析引导读者反思。";
+            const payload = {
+                contents: [{ parts: [{ text: prompt }] }],
+                systemInstruction: { parts: [{ text: systemPrompt }] }
+            };
+
+            let retries = 0;
+            const delays = [1000, 2000, 4000, 8000, 16000];
+            while (retries < 5) {
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    if (!response.ok) throw new Error('Request failed');
+                    const result = await response.json();
+                    return result.candidates?.[0]?.content?.parts?.[0]?.text;
+                } catch (error) {
+                    retries++;
+                    if (retries === 5) throw error;
+                    await new Promise(r => setTimeout(r, delays[retries-1]));
+                }
+            }
+        }
+
+        // AI Interaction Logic
+        const aiInput = document.getElementById('aiInput');
+        const sendAiBtn = document.getElementById('sendAiBtn');
+        const randomInsightBtn = document.getElementById('randomInsightBtn');
+        const aiResponseContainer = document.getElementById('aiResponseContainer');
+        const aiResponseText = document.getElementById('aiResponseText');
+        const aiLoading = document.getElementById('aiLoading');
+
+        const showAiResponse = async (prompt) => {
+            aiResponseContainer.classList.remove('hidden');
+            aiResponseText.innerText = "";
+            aiLoading.classList.remove('hidden');
+            aiResponseContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            try {
+                const text = await callGemini(prompt);
+                aiLoading.classList.add('hidden');
+                aiResponseText.innerText = text;
+            } catch (err) {
+                aiLoading.classList.add('hidden');
+                aiResponseText.innerText = "请求失败，请稍后再试。";
+            }
+        };
+
+        sendAiBtn.onclick = () => {
+            const val = aiInput.value.trim();
+            if (val) showAiResponse(`读者说：“${val}”。请结合《白色巨塔》的主题进行深度解析。`);
+        };
+
+        randomInsightBtn.onclick = () => {
+            showAiResponse("请生成一段关于《白色巨塔》中“理想主义者的孤独”或“权力的异化”的深度文学评论。");
+        };
+
+        // Scroll animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.classList.add('visible');
+            });
+        }, { threshold: 0.15 });
+        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+        document.getElementById('revealBtn').onclick = function() {
+            document.getElementById('hiddenMessage').classList.toggle('hidden');
+            this.innerText = "荐语已展开";
+        };
+
+        // Charts
+        const ctxSystem = document.getElementById('systemChart').getContext('2d');
+        new Chart(ctxSystem, {
+            type: 'doughnut',
+            data: {
+                labels: ['科研/医疗', '权力斗争', '杂务/应酬', '自我空间'],
+                datasets: [{ data: [25, 40, 30, 5], backgroundColor: ['#3b82f6', '#9f1239', '#64748b', '#e2e8f0'], borderWidth: 0 }]
+            },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } }, cutout: '75%' }
+        });
+
+        const ctxRadar = document.getElementById('radarChart').getContext('2d');
+        const dataZaizen = [95, 98, 40, 90, 30];
+        const dataSatomi = [85, 20, 95, 10, 95];
+        let radarChart = new Chart(ctxRadar, {
+            type: 'radar',
+            data: {
+                labels: ['医疗技术', '权力野心', '患者共情', '政治手腕', '学术纯粹'],
+                datasets: [{ label: '财前五郎', data: dataZaizen, backgroundColor: 'rgba(159, 18, 57, 0.2)', borderColor: '#9f1239', borderWidth: 2 },
+                { label: '里见修二', data: dataSatomi, backgroundColor: 'rgba(59, 130, 246, 0.1)', borderColor: '#3b82f6', borderWidth: 1 }]
+            },
+            options: { responsive: true, maintainAspectRatio: false, scales: { r: { ticks: { display: false }, max: 100, min: 0 } } }
+        });
+
+        window.updateRadar = (char) => {
+            if(char === 'zaizen') {
+                radarChart.data.datasets[0].label = '财前五郎 (核心视角)';
+                radarChart.data.datasets[1].label = '里见修二 (对比)';
+            } else {
+                radarChart.data.datasets[0].label = '里见修二 (核心视角)';
+                radarChart.data.datasets[1].label = '财前五郎 (对比)';
+            }
+            radarChart.update();
+        };
+    </script>
+</body>
+</html>
